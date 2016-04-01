@@ -16,6 +16,9 @@ bot.
 """
 
 from telegram.ext import Updater
+import parser
+import handler
+import vars
 import logging
 
 # Enable logging
@@ -25,19 +28,35 @@ logging.basicConfig(
 
 logger = logging.getLogger(__name__)
 
+command_handler = {}
+type_handler = {}
 
 # Define a few command handlers. These usually take the two arguments bot and
 # update. Error handlers also receive the raised TelegramError object in error.
 def start(bot, update):
-    bot.sendMessage(update.message.chat_id, text='Hi!')
+    pass
+    #bot.sendMessage(update.message.chat_id, text='Hi!')
 
 
 def help(bot, update):
-    bot.sendMessage(update.message.chat_id, text='Help!')
+    bot.sendMessage(update.message.chat_id, text=\
+        'The following keywords entered will be detected:\n' +\
+        ', '.join(vars.cat_list) +  '\n' +\
+        ', '.join(vars.girl_list))
+
+def command(bot, update):
+    global command_handler
+    s = update.message.text.split(' ')
+    if s[1] in command_handler.keys():
+        command_handler[s[1]](bot, update)
 
 
 def echo(bot, update):
-    bot.sendMessage(update.message.chat_id, text=update.message.text)
+    global type_handler
+    t = parser.get_message_type(update.message.text)
+    if t in type_handler.keys():
+        type_handler[t]()
+    #bot.sendMessage(update.message.chat_id, text=update.message.text)
 
 
 def error(bot, update, error):
@@ -45,6 +64,11 @@ def error(bot, update, error):
 
 
 def main():
+    global command_handler
+    command_handler = {'help' : help}
+    global type_handler
+    type_handler = {vars.cat_str : handler.cat, vars.girl_str : handler.girl}
+
     # Create the EventHandler and pass it your bot's token.
     updater = Updater("202654459:AAH1GTl4OE55CzNXwzXZ5Qqj3C7onFa-syA")
 
@@ -53,7 +77,7 @@ def main():
 
     # on different commands - answer in Telegram
     dp.addTelegramCommandHandler("start", start)
-    dp.addTelegramCommandHandler("help", help)
+    dp.addTelegramCommandHandler("yomao", command)
 
     # on noncommand i.e message - echo the message on Telegram
     dp.addTelegramMessageHandler(echo)
