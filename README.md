@@ -3,11 +3,11 @@
 yomaobot is a telegram bot that replies images according to the keywords inputted by users.
 ### Building Dependency
 ---
-* `Python` >= 3
-* `pyTelegramBotAPI`
-* `BeautifulSoup4`
-* `requests`
-* `html5lib` 
+* [Python](https://www.python.org/) >= 3
+* [pyTelegramBotAPI](https://github.com/eternnoir/pyTelegramBotAPI)
+* [BeautifulSoup4](https://www.crummy.com/software/BeautifulSoup/)
+* [requests](http://docs.python-requests.org/en/master/)
+* [html5lib](https://github.com/html5lib/html5lib-python)
 ### Feature
 ---
 * Detect keywords and reply image.
@@ -23,8 +23,3 @@ Sean Chen <genius091612@gmail.com>
 ### License
 ---
 GPLv3 or later
-.. _Python: https://www.python.org/
-.. _pyTelegramBotAPI: https://github.com/eternnoir/pyTelegramBotAPI
-.. _BeautifulSoup4: https://www.crummy.com/software/BeautifulSoup/
-.. _requests: http://docs.python-requests.org/en/master/
-.. _html5lib: https://github.com/html5lib/html5lib-python
