@@ -27,7 +27,7 @@ def get_ptt_image(type_str):
     print('image: ' + image_url)
     return image_url
 
-bot = telebot.TeleBot('202654459:AAH1GTl4OE55CzNXwzXZ5Qqj3C7onFa-syA')
+bot = telebot.TeleBot('token')
 
 # Handle '/yomao'
 @bot.message_handler(commands=['yomao'])
