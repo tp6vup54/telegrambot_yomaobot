@@ -20,7 +20,7 @@ $ pip install pyTelegramBotAPI BeautifulSoup4 requests html5lib
 * Detect keywords and reply image.
 * Keywords are as followed
   * cat, kitty, kitties, 貓, 咪, 喵
-  * girl, sister, 女, 姐, 姊, 妹
+  * girl, sister, woman, women, 女, 姐, 姊, 妹
 
 ![Demo_cat](http://i.imgur.com/HVi5tw6.png "Demo_cat")
 * It randomly select an image from the following site
