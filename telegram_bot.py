@@ -33,8 +33,8 @@ bot = telebot.TeleBot('202654459:AAH1GTl4OE55CzNXwzXZ5Qqj3C7onFa-syA')
 @bot.message_handler(commands=['yomao'])
 def parse_command(message):
     global command_handler
-    if message.text.split(' ')[1] in command_handler:
-        command_handler[message.text.split(' ')[1]](message)
+    if message.text.split(' ')[1].lower() in command_handler:
+        command_handler[message.text.split(' ')[1].lower()](message)
 
 def help(message):
     bot.reply_to(message, 'The following keywords entered will be detected:\n' +\
@@ -45,7 +45,7 @@ def help(message):
 def echo_message(message):
     print('>>echo_message')
     global type_handler
-    t = get_message_type(message.text)
+    t = get_message_type(message.text.lower())
     if t in type_handler.keys():
         image_url = type_handler[t]()
         #bot.sendPhoto(update.message.chat_id, photo = image_url)
