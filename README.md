@@ -1,6 +1,7 @@
 # yomaobot
----
+===
 yomaobot is a telegram bot that replies images according to the keywords inputted by users.
+
 ### Building Dependency
 ---
 * [Python](https://www.python.org/) >= 3
@@ -8,6 +9,7 @@ yomaobot is a telegram bot that replies images according to the keywords inputte
 * [BeautifulSoup4](https://www.crummy.com/software/BeautifulSoup/)
 * [requests](http://docs.python-requests.org/en/master/)
 * [html5lib](https://github.com/html5lib/html5lib-python)
+
 ### Feature
 ---
 * Detect keywords and reply image.
@@ -17,9 +19,11 @@ yomaobot is a telegram bot that replies images according to the keywords inputte
 * It randomly select an image from the following site
   * https://www.ptt.cc/bbs/Beauty/index.html
   * https://www.ptt.cc/bbs/cat/index.html
+
 ### Author
 ---
 Sean Chen <genius091612@gmail.com>
+
 ### License
 ---
 GPLv3 or later
