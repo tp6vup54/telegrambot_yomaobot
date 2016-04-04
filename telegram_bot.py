@@ -1,66 +1,12 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-#
-# Simple Bot to reply to Telegram messages
-# This program is dedicated to the public domain under the CC0 license.
-
-"""
-This Bot uses the Updater class to handle the bot.
-First, a few handler functions are defined. Then, those functions are passed to
-the Dispatcher and registered at their respective places.
-Then, the bot is started and run until we press Ctrl-C on the command line.
-Usage:
-Basic Echobot example, repeats messages.
-Press Ctrl-C on the command line or send a signal to the process to stop the
-bot.
-"""
-
-from telegram.ext import Updater
+import telebot
 from ptt_board import ptt_board
-import parser
+from message_parser import get_message_type
 import vars
-import logging
-
-# Enable logging
-logging.basicConfig(
-        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-        level=logging.INFO)
-
-logger = logging.getLogger(__name__)
 
 command_handler = {}
 type_handler = {}
 updater = None
 board = {}
-
-# Define a few command handlers. These usually take the two arguments bot and
-# update. Error handlers also receive the raised TelegramError object in error.
-def start(bot, update):
-    pass
-    #bot.sendMessage(update.message.chat_id, text='Hi!')
-
-
-def help(bot, update):
-    bot.sendMessage(update.message.chat_id, text=\
-        'The following keywords entered will be detected:\n' +\
-        ', '.join(vars.cat_list) +  '\n' +\
-        ', '.join(vars.girl_list))
-
-def command(bot, update):
-    global command_handler
-    s = update.message.text.split(' ')
-    if s[1] in command_handler.keys():
-        command_handler[s[1]](bot, update)
-
-def echo(bot, update):
-    global type_handler
-    t = parser.get_message_type(update.message.text)
-    if t in type_handler.keys():
-        image_url = type_handler[t]()
-        bot.sendPhoto(update.message.chat_id, photo = image_url)
-
-def error(bot, update, error):
-    logger.warn('Update "%s" caused error "%s"' % (update, error))
 
 def get_ptt_image(type_str):
     current_board = None
@@ -81,6 +27,30 @@ def get_ptt_image(type_str):
     print('image: ' + image_url)
     return image_url
 
+bot = telebot.TeleBot('202654459:AAH1GTl4OE55CzNXwzXZ5Qqj3C7onFa-syA')
+
+# Handle '/yomao'
+@bot.message_handler(commands=['yomao'])
+def parse_command(message):
+    global command_handler
+    if message.text.split(' ')[1] in command_handler:
+        command_handler[message.text.split(' ')[1]](message)
+
+def help(message):
+    bot.reply_to(message, 'The following keywords entered will be detected:\n' +\
+        ', '.join(vars.cat_list) +  '\n' +\
+        ', '.join(vars.girl_list))
+
+@bot.message_handler(func=lambda message: True, content_types=['text'])
+def echo_message(message):
+    print('>>echo_message')
+    global type_handler
+    t = get_message_type(message.text)
+    if t in type_handler.keys():
+        image_url = type_handler[t]()
+        #bot.sendPhoto(update.message.chat_id, photo = image_url)
+        bot.reply_to(message, image_url)
+
 def main():
     global command_handler
     command_handler = {'help' : help}
@@ -89,31 +59,7 @@ def main():
         vars.cat_str : lambda: get_ptt_image(vars.cat_str),\
         vars.girl_str : lambda: get_ptt_image(vars.girl_str)
     }
-
-    # Create the EventHandler and pass it your bot's token.
-    global updater
-    updater = Updater("202654459:AAH1GTl4OE55CzNXwzXZ5Qqj3C7onFa-syA")
-
-    # Get the dispatcher to register handlers
-    dp = updater.dispatcher
-
-    # on different commands - answer in Telegram
-    dp.addTelegramCommandHandler("start", start)
-    dp.addTelegramCommandHandler("yomao", command)
-
-    # on noncommand i.e message - echo the message on Telegram
-    dp.addTelegramMessageHandler(echo)
-
-    # log all errors
-    dp.addErrorHandler(error)
-
-    # Start the Bot
-    updater.start_polling()
-
-    # Run the bot until the you presses Ctrl-C or the process receives SIGINT,
-    # SIGTERM or SIGABRT. This should be used most of the time, since
-    # start_polling() is non-blocking and will stop the bot gracefully.
-    updater.idle()
-
+    global bot
+    bot.polling()
 if __name__ == '__main__':
     main()
