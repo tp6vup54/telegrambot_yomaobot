@@ -1,6 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
-import vars
+from vars import vars
 
 def get_soup(url, is_sub = True):
 	if is_sub:

@@ -1,7 +1,7 @@
 import random
 from util import get_soup
 from ptt_page import ptt_page
-import vars
+from vars import vars
 
 class ptt_board():
 	def __init__(self, name):

@@ -1,6 +1,6 @@
 import random
 from util import get_soup
-import vars
+from vars import vars
 
 class ptt_article():
 	def __init__(self, url):

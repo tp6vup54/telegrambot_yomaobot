@@ -1,7 +1,11 @@
 import telebot
 from ptt_board import ptt_board
 from message_parser import get_message_type
-import vars
+from vars import vars
+
+WEBHOOK_HOST = 'yomao.xyz'
+WEBHOOK_PORT = 5393
+WEBHOOK_LISTEN = '0.0.0.0'
 
 command_handler = {}
 type_handler = {}
@@ -27,28 +31,33 @@ def get_ptt_image(type_str):
     print('image: ' + image_url)
     return image_url
 
+#logger = telebot.logger
+#telebot.logger.setLevel(logging.INFO)
+
 bot = telebot.TeleBot('202654459:AAH1GTl4OE55CzNXwzXZ5Qqj3C7onFa-syA')
 
 # Handle '/yomao'
 @bot.message_handler(commands=['yomao'])
 def parse_command(message):
+    print('get command')
     global command_handler
-    if message.text.split(' ')[1].lower() in command_handler:
-        command_handler[message.text.split(' ')[1].lower()](message)
+    m = message.text.split(' ')
+    if len(m) > 2 and m[1].lower() in command_handler:
+        command_handler[m[1].lower()](message)
 
 def help(message):
+    print('help')
     bot.reply_to(message, 'The following keywords entered will be detected:\n' +\
         ', '.join(vars.cat_list) +  '\n' +\
         ', '.join(vars.girl_list))
 
-@bot.message_handler(func=lambda message: True, content_types=['text'])
+@bot.message_handler(func=lambda message: True)
 def echo_message(message):
-    print('>>echo_message')
+    print('>>echo_message: ' + message.text)
     global type_handler
     t = get_message_type(message.text.lower())
     if t in type_handler.keys():
         image_url = type_handler[t]()
-        #bot.sendPhoto(update.message.chat_id, photo = image_url)
         bot.reply_to(message, image_url)
 
 def main():
@@ -59,7 +68,8 @@ def main():
         vars.cat_str : lambda: get_ptt_image(vars.cat_str),\
         vars.girl_str : lambda: get_ptt_image(vars.girl_str)
     }
-    global bot
+    print('start polling')
     bot.polling()
+
 if __name__ == '__main__':
     main()

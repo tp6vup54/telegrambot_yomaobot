@@ -1,7 +1,7 @@
 import random
 from util import get_soup
 from ptt_article import ptt_article
-import vars
+from vars import vars
 
 class ptt_page():
 	def __init__(self, page_sub_url):

@@ -1,4 +1,4 @@
-import vars
+from vars import vars
 
 def get_message_type(text):
 	for cat in vars.cat_list:
