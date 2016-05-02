@@ -16,7 +16,7 @@ class ptt_board():
 
 	def get_max_page_index(self):
 		soup = get_soup(vars.init_url[self.name])
-		maxpage = soup.find('div', {'class' : 'btn-group pull-right'}).findAll('a')[1]['href'].replace(vars.url_ending, '')
+		maxpage = soup.find('div', {'class' : 'btn-group btn-group-paging'}).findAll('a')[1]['href'].replace(vars.url_ending, '')
 		self.max_page_index = int(maxpage[maxpage.index('index') + 5:]) + 1
 
 	def get_random_page(self):
