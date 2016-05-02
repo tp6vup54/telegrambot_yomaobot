@@ -1,16 +1,21 @@
 import telebot
 import logging
 import flask
+import configparser
 from ptt_board import ptt_board
 from message_parser import get_message_type
 from vars import vars
 from util import console_out
 
-API_TOKEN = '202654459:AAH1GTl4OE55CzNXwzXZ5Qqj3C7onFa-syA'
+config = configparser.ConfigParser()
+config.sections()
+config.read('yomaobot.conf')
 
-WEBHOOK_HOST = 'yomao.xyz'
-WEBHOOK_PORT = 443
-WEBHOOK_PORT_PROXY = 5393
+API_TOKEN = config['DEFAULTS']['bot_token']
+
+WEBHOOK_HOST = config['DEFAULTS']['url']
+WEBHOOK_PORT = int(config['DEFAULTS']['nginx_port'])
+WEBHOOK_PORT_PROXY = int(config['DEFAULTS']['proxy_port'])
 WEBHOOK_LISTEN = '0.0.0.0'
 
 WEBHOOK_URL_BASE = 'https://%s:%s' % (WEBHOOK_HOST, WEBHOOK_PORT)
