@@ -18,7 +18,7 @@ $ pip install -r requirements.txt
 
 ### Special Requirement
 ---
-* The proxy pass utility is used in this bot, so you can see an element named 'nginx port' and another named 'proxy port' in .conf file. For the proxy pass, you can use [nginx](http://nginx.org/) or [apache](https://httpd.apache.org/) to satisfy the utility.
+* The proxy pass utility is used in this bot, so you can see an element named 'nginx port' and another named 'proxy port' in .conf file. For the proxy pass, you can use [nginx](http://nginx.org/) or [apache](https://httpd.apache.org/) to achieve.
 
 ### Feature
 ---
