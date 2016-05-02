@@ -9,10 +9,11 @@ yomaobot is a telegram bot that replies images according to the keywords inputte
 * [BeautifulSoup4](https://www.crummy.com/software/BeautifulSoup/)
 * [requests](http://docs.python-requests.org/en/master/)
 * [html5lib](https://github.com/html5lib/html5lib-python)
+* [flask](http://flask.pocoo.org/)
 
 You can simply install the libraries using pip:
 ```
-$ pip install pyTelegramBotAPI BeautifulSoup4 requests html5lib
+$ pip install -r requirements.txt
 ```
 
 ### Feature
