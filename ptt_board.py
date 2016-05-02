@@ -1,5 +1,5 @@
 import random
-from util import get_soup
+from util import get_soup, console_out
 from ptt_page import ptt_page
 from vars import vars
 
@@ -21,5 +21,5 @@ class ptt_board():
 
 	def get_random_page(self):
 		page = str(random.randint(1, self.max_page_index))
-		print('page: ' + page)
+		console_out('page: ' + page)
 		return ptt_page(vars.init_url[self.name] + page)
