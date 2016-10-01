@@ -1,5 +1,6 @@
 import telebot
 import logging
+import os
 import flask
 import configparser
 import logging
@@ -41,7 +42,7 @@ def init_logger():
     level = logging.INFO
     if os.getenv("DEBUG") == '1':
         level = logging.DEBUG
-root.setLevel(level)
+    root.setLevel(level)
 
 def get_ptt_image(type_str):
     current_board = None
@@ -57,7 +58,7 @@ def get_ptt_image(type_str):
         article = current_board.get_random_page().get_random_article(lower_bound = vars.lower_bound_dict[type_str])
         if article:
             image_url = article.get_random_image()
-    console_out('image: ' + image_url)
+        logging.info('image: ' + image_url)
     return image_url
 
 logger = telebot.logger
