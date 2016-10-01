@@ -2,10 +2,11 @@ import telebot
 import logging
 import flask
 import configparser
+import logging
+import logging.config
 from ptt_board import ptt_board
 from message_parser import get_message_type
 from vars import vars
-from util import console_out
 
 config = configparser.ConfigParser()
 config.sections()
@@ -30,6 +31,18 @@ type_handler = {\
     vars.girl_str : lambda: get_ptt_image(vars.girl_str)
 }
 
+def init_logger():
+    """
+    Init logger. Default use INFO level. If 'DEBUG' is '1' in env use DEBUG level.
+    :return:
+    """
+    logging.config.fileConfig("./logging.conf")
+    root = logging.getLogger()
+    level = logging.INFO
+    if os.getenv("DEBUG") == '1':
+        level = logging.DEBUG
+root.setLevel(level)
+
 def get_ptt_image(type_str):
     current_board = None
     if type_str in board:
@@ -50,6 +63,8 @@ def get_ptt_image(type_str):
 logger = telebot.logger
 telebot.logger.setLevel(logging.INFO)
 
+init_logger()
+logging.info('Init bot use token. %s' % API_TOKEN)
 bot = telebot.TeleBot(API_TOKEN)
 app = flask.Flask(__name__)
 
@@ -68,8 +83,7 @@ def webhook():
             json_string = json_string.decode('utf-8')
             update = telebot.types.Update.de_json(json_string)
         except:
-            console_out('get except')
-            console_out(json_string)
+            logging.info('get except, %s' % json_string)
             return ''
         bot.process_new_messages([update.message])
         return ''
@@ -79,34 +93,37 @@ def webhook():
 # Handle '/yomao'
 @bot.message_handler(commands=['yomao'])
 def parse_command(message):
-    console_out('get command')
+    logging.info('get command')
     global command_handler
     m = message.text.split(' ')
     if len(m) > 2 and m[1].lower() in command_handler:
         command_handler[m[1].lower()](message)
 
 def help(message):
-    console_out('help')
+    logging.info('help')
     bot.reply_to(message, 'The following keywords entered will be detected:\n' +\
         ', '.join(vars.cat_list) +  '\n' +\
         ', '.join(vars.girl_list))
 
 @bot.message_handler(func=lambda message: True)
 def echo_message(message):
-    console_out('>>echo_message: ' + message.text)
+    logging.info('echo message: ' + message.text)
     global type_handler
     t = get_message_type(message.text.lower())
     if t in type_handler:
         image_url = type_handler[t]()
         bot.reply_to(message, image_url)
 
+logging.info('remove previous webhook')
 # Remove webhook, it fails sometimes the set if there is a previous webhook
 bot.remove_webhook()
 
+logging.info('setting webhook with url: %s%s' % (WEBHOOK_URL_BASE, WEBHOOK_URL_PATH))
 # Set webhook
 bot.set_webhook(url = WEBHOOK_URL_BASE + WEBHOOK_URL_PATH)
 # start flask server
 
+logging.info('start webhook with host %s and port %s.' % (WEBHOOK_LISTEN, WEBHOOK_PORT_PROXY))
 app.run(host=WEBHOOK_LISTEN,
         port=WEBHOOK_PORT_PROXY,
         debug=True)
