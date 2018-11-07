@@ -16,8 +16,8 @@ config.read('yomaobot.conf')
 API_TOKEN = config['DEFAULTS']['bot_token']
 
 WEBHOOK_HOST = config['DEFAULTS']['url']
-WEBHOOK_PORT = int(config['DEFAULTS']['nginx_port'])
-WEBHOOK_PORT_PROXY = int(config['DEFAULTS']['proxy_port'])
+WEBHOOK_PORT = int(config['DEFAULTS']['port_webhook'])
+WEBHOOK_PORT_PROXY = int(config['DEFAULTS']['port_proxy'])
 WEBHOOK_LISTEN = '0.0.0.0'
 
 WEBHOOK_URL_BASE = 'https://%s:%s' % (WEBHOOK_HOST, WEBHOOK_PORT)
@@ -27,9 +27,9 @@ updater = None
 board = {}
 
 command_handler = {'help' : help}
-type_handler = {\
-    vars.cat_str : lambda: get_ptt_image(vars.cat_str),\
-    vars.girl_str : lambda: get_ptt_image(vars.girl_str)
+type_handler = {
+    vars.cat_str : lambda: get_ptt_image(vars.cat_str),
+    vars.girl_str : lambda: get_ptt_image(vars.girl_str),
 }
 
 def init_logger():

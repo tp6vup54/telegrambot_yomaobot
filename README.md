@@ -1,5 +1,5 @@
 # yomaobot
-===
+
 yomaobot is a telegram bot that replies images according to the keywords inputted by users.
 
 ### Building Dependency
