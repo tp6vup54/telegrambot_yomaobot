@@ -93,7 +93,8 @@ def webhook():
         except:
             logging.info('get except, %s.' % json_string)
             return ''
-        bot.process_new_messages([update.message])
+        if update.message:
+            bot.process_new_messages([update.message])
         return ''
     else:
         flask.abort(403)
@@ -103,6 +104,7 @@ def webhook():
 @bot.message_handler(commands=['yomao'])
 def parse_command(message):
     logging.info('get command, %s.' % message.text)
+    bot.send_message(config['DEFAULTS']['my_chat_id'], 'test')
     global command_handler
     m = message.text.split(' ')
     if len(m) >= 2 and m[1].lower() in command_handler:
@@ -117,6 +119,7 @@ def echo_message(message):
     if t in type_handler:
         image_url = type_handler[t]()
         bot.reply_to(message, image_url)
+
 
 logging.info('remove previous webhook')
 # Remove webhook, it fails sometimes the set if there is a previous webhook
