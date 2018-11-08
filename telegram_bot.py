@@ -5,6 +5,7 @@ import flask
 import configparser
 import logging
 import logging.config
+import time
 from ptt_board import ptt_board
 from message_parser import get_message_type
 from vars import vars
@@ -26,7 +27,13 @@ WEBHOOK_URL_PATH = '/%s/' % (API_TOKEN)
 updater = None
 board = {}
 
-command_handler = {'help' : help}
+def my_help(message):
+    logging.info('help')
+    bot.reply_to(message, 'The following keywords entered will be detected:\n' +\
+        ', '.join(vars.cat_list) +  '\n' +\
+        ', '.join(vars.girl_list))
+
+command_handler = {'help' : my_help}
 type_handler = {
     vars.cat_str : lambda: get_ptt_image(vars.cat_str),
     vars.girl_str : lambda: get_ptt_image(vars.girl_str),
@@ -58,7 +65,7 @@ def get_ptt_image(type_str):
         article = current_board.get_random_page().get_random_article(lower_bound = vars.lower_bound_dict[type_str])
         if article:
             image_url = article.get_random_image()
-        logging.info('image: ' + image_url)
+        logging.info('image: %s.' % image_url)
     return image_url
 
 logger = telebot.logger
@@ -84,31 +91,27 @@ def webhook():
             json_string = json_string.decode('utf-8')
             update = telebot.types.Update.de_json(json_string)
         except:
-            logging.info('get except, %s' % json_string)
+            logging.info('get except, %s.' % json_string)
             return ''
         bot.process_new_messages([update.message])
         return ''
     else:
         flask.abort(403)
 
+
 # Handle '/yomao'
 @bot.message_handler(commands=['yomao'])
 def parse_command(message):
-    logging.info('get command')
+    logging.info('get command, %s.' % message.text)
     global command_handler
     m = message.text.split(' ')
-    if len(m) > 2 and m[1].lower() in command_handler:
+    if len(m) >= 2 and m[1].lower() in command_handler:
         command_handler[m[1].lower()](message)
 
-def help(message):
-    logging.info('help')
-    bot.reply_to(message, 'The following keywords entered will be detected:\n' +\
-        ', '.join(vars.cat_list) +  '\n' +\
-        ', '.join(vars.girl_list))
 
 @bot.message_handler(func=lambda message: True)
 def echo_message(message):
-    logging.info('echo message: ' + message.text)
+    logging.info('echo message: %s.' % message.text)
     global type_handler
     t = get_message_type(message.text.lower())
     if t in type_handler:
@@ -118,12 +121,9 @@ def echo_message(message):
 logging.info('remove previous webhook')
 # Remove webhook, it fails sometimes the set if there is a previous webhook
 bot.remove_webhook()
-
+time.sleep(0.1)
 logging.info('setting webhook with url: %s%s' % (WEBHOOK_URL_BASE, WEBHOOK_URL_PATH))
-# Set webhook
-bot.set_webhook(url = WEBHOOK_URL_BASE + WEBHOOK_URL_PATH)
-# start flask server
-
+bot.set_webhook(url=WEBHOOK_URL_BASE + WEBHOOK_URL_PATH, certificate=open('/etc/ssl/bot_vps_yomao_xyz.pem', 'r'))
 logging.info('start webhook with host %s and port %s.' % (WEBHOOK_LISTEN, WEBHOOK_PORT_PROXY))
 app.run(host=WEBHOOK_LISTEN,
         port=WEBHOOK_PORT_PROXY,
